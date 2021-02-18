@@ -34,6 +34,10 @@ module.exports = (app, options) => (event, context, callback) => {
   if (event.requestContext && event.requestContext.requestId) {
     headers['x-request-id'] = headers['x-request-id'] || event.requestContext.requestId
   }
+  
+  if (Array.isArray(event.cookies)) {
+    headers.cookies = event.cookies.join('; ');
+  }
 
   const prom = new Promise((resolve) => {
     app.inject({ method, url, query, payload, headers }, (err, res) => {
