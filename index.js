@@ -36,7 +36,7 @@ module.exports = (app, options) => (event, context, callback) => {
   }
   
   if (Array.isArray(event.cookies)) {
-    headers.cookies = event.cookies.join('; ');
+    headers.cookie = event.cookies.join('; ');
   }
 
   const prom = new Promise((resolve) => {
