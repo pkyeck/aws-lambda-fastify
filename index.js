@@ -56,12 +56,12 @@ module.exports = (app, options) => (event, context, callback) => {
 
       let multiValueHeaders
       
-      if (options.payloadFormat === '1.0') { 
+      //if (options.payloadFormat === '1.0') { 
         Object.keys(res.headers).forEach((h) => {
           if (Array.isArray(res.headers[h])) {
             if (h.toLowerCase() === 'set-cookie') {
               multiValueHeaders = multiValueHeaders || {}
-              multiValueHeaders[h] = res.headers[h]
+              multiValueHeaders['Set-Cookie'] = res.headers[h]
               delete res.headers[h]
             } else res.headers[h] = res.headers[h].join(',')
           } else if (typeof res.headers[h] !== 'undefined' && typeof res.headers[h] !== 'string') {
@@ -69,7 +69,7 @@ module.exports = (app, options) => (event, context, callback) => {
             res.headers[h] = res.headers[h].toString()
           }
         })
-      }
+      //}
 
       const contentType = (res.headers['content-type'] || res.headers['Content-Type'] || '').split(';')[0]
       const isBase64Encoded = options.binaryMimeTypes.indexOf(contentType) > -1
