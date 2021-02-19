@@ -77,6 +77,7 @@ module.exports = (app, options) => (event, context, callback) => {
         isBase64Encoded
       }
       if (multiValueHeaders) ret.multiValueHeaders = multiValueHeaders
+      console.log('lambda-fastify response', JSON.stringify(ret))
       resolve(ret)
     })
   })
