@@ -59,11 +59,12 @@ module.exports = (app, options) => (event, context, callback) => {
       //if (options.payloadFormat === '1.0') { 
         Object.keys(res.headers).forEach((h) => {
           if (Array.isArray(res.headers[h])) {
-            if (h.toLowerCase() === 'set-cookie') {
-              multiValueHeaders = multiValueHeaders || {}
-              multiValueHeaders['Set-Cookie'] = res.headers[h]
-              delete res.headers[h]
-            } else res.headers[h] = res.headers[h].join(',')
+            //if (h.toLowerCase() === 'set-cookie') {
+            //  multiValueHeaders = multiValueHeaders || {}
+            //  multiValueHeaders['Set-Cookie'] = res.headers[h]
+            //  delete res.headers[h]
+            //} else res.headers[h] = res.headers[h].join(',')
+            res.headers[h] = res.headers[h].join(',')
           } else if (typeof res.headers[h] !== 'undefined' && typeof res.headers[h] !== 'string') {
             // NOTE: API Gateway (i.e. HttpApi) validates all headers to be a string
             res.headers[h] = res.headers[h].toString()
