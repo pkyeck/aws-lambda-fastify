@@ -56,28 +56,32 @@ module.exports = (app, options) => (event, context, callback) => {
 
       let multiValueHeaders;
       
-      if (options.payloadFormat === '1.0') { 
-        Object.keys(res.headers).forEach((h) => {
-          if (Array.isArray(res.headers[h])) {
-            if (h.toLowerCase() === 'set-cookie') {
+      const SET_COOKIE_HEADER_NAMES = [
+        'Set-cookie',
+        'sEt-cookie',
+        'seT-cookie',
+        'set-Cookie',
+        'set-cOokie',
+      ];      
+      Object.keys(res.headers).forEach((h) => {
+        if (Array.isArray(res.headers[h])) {
+          if (h.toLowerCase() === 'set-cookie') {
+            if (options.payloadFormat === '1.0') { 
               multiValueHeaders = multiValueHeaders || {}
               multiValueHeaders['Set-Cookie'] = res.headers[h]
-              delete res.headers[h]
-            } else res.headers[h] = res.headers[h].join(',')
-            // res.headers[h] = res.headers[h].join(',')
-          } else if (typeof res.headers[h] !== 'undefined' && typeof res.headers[h] !== 'string') {
-            // NOTE: API Gateway (i.e. HttpApi) validates all headers to be a string
-            res.headers[h] = res.headers[h].toString()
-          }
-        })
-      } else {
-        Object.keys(res.headers).forEach((h) => {
-          if (typeof res.headers[h] !== 'undefined' && typeof res.headers[h] !== 'string') {
-            // NOTE: API Gateway (i.e. HttpApi) validates all headers to be a string
-            res.headers[h] = res.headers[h].toString()
-          }
-        });
-      }
+            } else {
+              res.headers[h].forEach((value, index) => {
+                res.headers[SET_COOKIE_HEADER_NAMES[index]] = value;
+              });
+            }
+            delete res.headers[h]
+          } else res.headers[h] = res.headers[h].join(',')
+          // res.headers[h] = res.headers[h].join(',')
+        } else if (typeof res.headers[h] !== 'undefined' && typeof res.headers[h] !== 'string') {
+          // NOTE: API Gateway (i.e. HttpApi) validates all headers to be a string
+          res.headers[h] = res.headers[h].toString()
+        }
+      });
 
       const contentType = (res.headers['content-type'] || res.headers['Content-Type'] || '').split(';')[0]
       const isBase64Encoded = options.binaryMimeTypes.indexOf(contentType) > -1
