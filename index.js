@@ -76,7 +76,7 @@ module.exports = (app, options) => (event, context, callback) => {
             // NOTE: API Gateway (i.e. HttpApi) validates all headers to be a string
             res.headers[h] = res.headers[h].toString()
           }
-        }
+        });
       }
 
       const contentType = (res.headers['content-type'] || res.headers['Content-Type'] || '').split(';')[0]
