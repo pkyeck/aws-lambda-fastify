@@ -71,9 +71,11 @@ module.exports = (app, options) => (event, context, callback) => {
           }
         })
       } else {
-        if (typeof res.headers[h] !== 'undefined' && typeof res.headers[h] !== 'string') {
-          // NOTE: API Gateway (i.e. HttpApi) validates all headers to be a string
-          res.headers[h] = res.headers[h].toString()
+        Object.keys(res.headers).forEach((h) => {
+          if (typeof res.headers[h] !== 'undefined' && typeof res.headers[h] !== 'string') {
+            // NOTE: API Gateway (i.e. HttpApi) validates all headers to be a string
+            res.headers[h] = res.headers[h].toString()
+          }
         }
       }
 
